@@ -2,4 +2,4 @@ sudo docker run \
   -it -P \
   -v $HOME/wikipath:/home/wikipath \
   -v $HOME/wikipath/data:/home/neo4j/data \
-  docker-moat /bin/bash
+  wikipath /bin/bash
