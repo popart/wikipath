@@ -1,5 +1,9 @@
 sudo docker run \
-  -it -P \
+  -it \
+  -p 7474:7474 \
+  -p 7473:7473 \
+  -p 7687:7687 \
+  -p 8000:8000 \
   -v $HOME/wikipath:/home/wikipath \
   -v $HOME/wikipath/data:/home/neo4j/data \
   popart/wikipath /bin/bash
