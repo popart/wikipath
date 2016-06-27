@@ -10,7 +10,7 @@ for line in f_in:
     i = i + 1
     batch_size = batch_size + 1
     if batch_size == 1000:
-        f_out.write('\n'.join(batch))
+        f_out.write(batch)
         batch_size = 0
 
 if len(batch) > 0:
