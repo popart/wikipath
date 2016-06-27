@@ -1,0 +1,1 @@
+/home/neo4j/bin/neo4j-import --into data/databases/graph.db --nodes:Page data/import/pages.csv --relationships:LINKS_TO data/import/links.csv --delimiter "|"
