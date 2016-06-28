@@ -1,4 +1,4 @@
-#from database.neo4jconn import Neo4JConn
+from neo4j.v1.exceptions import ResultError
 
 class Pages:
     def __init__(self, db):
@@ -17,7 +17,7 @@ class Pages:
         query = """
             MATCH (a:Page)
             WHERE a.title STARTS WITH {title}
-            RETURN a.title as title, a.id as id
+            RETURN a.title AS title, a.id AS id
             LIMIT {limit}
         """
         results = self.__db.fetch(query,
@@ -28,11 +28,11 @@ class Pages:
         query = """
             MATCH (a:Page {id:{a_id}}), (b:Page {id:{b_id}}),
             p = shortestPath((a)-[*]->(b))
-            RETURN p
+            RETURN p AS path
         """
         results = self.__db.fetch(query,
                 {'a_id': a_id, 'b_id': b_id})
         try:
-            return results.next()['path'].nodes
+            return results.single()['path'].nodes
         except StopIteration:
             return []
