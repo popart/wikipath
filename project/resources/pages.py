@@ -3,6 +3,7 @@ from .. database import pages
 from .. database import neo4jconn
 
 import json
+import falcon
 
 class PagesResource:
     def __init__(self):
@@ -10,30 +11,25 @@ class PagesResource:
         self.pages = pages.Pages(self.db)
 
     def on_get(self, req, resp):
-        res = self.pages.select()
-        output = []
-        for r in res:
-            output.append(r['title'])
-        resp.body = json.dumps(output)
-
-class PagesSearchTitleResource:
-    def __init__(self):
-        self.db = neo4jconn.Neo4JConn(**env.db_settings)
-        self.pages = pages.Pages(self.db)
-
-    def on_get(self, req, resp, title):
-        res = self.pages.search_title(title)
-        output = []
-        for r in res:
-            output.append(r['title'])
-        resp.body = json.dumps(output)
+        res = self.pages.select(req.params)
+        out = list(map(lambda record: {
+                'id': record['id'],
+                'title': record['title']
+            }, res))
+        resp.body = json.dumps(out)
 
 class PagesShortestPathResource:
     def __init__(self):
         self.db = neo4jconn.Neo4JConn(**env.db_settings)
         self.pages = pages.Pages(self.db)
 
-    def on_get(self, req, resp, a_id, b_id):
-        path = self.pages.shortest_path(a_id, b_id)
+    def on_get(self, req, resp):
+        try:
+            start = req.params['start']
+            end = req.params['end']
+        except KeyError as e:
+            raise falcon.HTTPMissingParam(e.args[0])
+
+        path = self.pages.shortest_path(start, end)
         out = list(map(lambda node: node.properties, path))
         resp.body = json.dumps(out)

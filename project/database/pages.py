@@ -4,34 +4,39 @@ class Pages:
     def __init__(self, db):
         self.__db = db
 
-    def select(self):
+    def select(self, params):
+        search_params = {
+            'limit': 10
+        }
+        where_clause = ""
+
+        #todo: should move this kind of check to middleware
+        if 'limit' in params and params['limit'].isdigit():
+            search_params['limit'] = int(params['limit'])
+        if 'startsWith' in params:
+            where_clause = where_clause + \
+                "AND p.title STARTS WITH {startsWith}\n"
+            search_params['startsWith'] = params['startsWith']
+
         query = """
             MATCH (p: Page)
+            WHERE 1=1
+            %s
             RETURN p.title as title, p.id as id
             LIMIT {limit}
-        """
-        results = self.__db.fetch(query, {'limit': 10})
+        """ % where_clause
+
+        results = self.__db.fetch(query, search_params)
         return results
 
-    def search_title(self, title, limit=8):
+    def shortest_path(self, start, end):
         query = """
-            MATCH (a:Page)
-            WHERE a.title STARTS WITH {title}
-            RETURN a.title AS title, a.id AS id
-            LIMIT {limit}
-        """
-        results = self.__db.fetch(query,
-                {'title': title, 'limit': limit})
-        return results
-
-    def shortest_path(self, a_id, b_id):
-        query = """
-            MATCH (a:Page {id:{a_id}}), (b:Page {id:{b_id}}),
+            MATCH (a:Page {id:{start}}), (b:Page {id:{end}}),
             p = shortestPath((a)-[*]->(b))
             RETURN p AS path
         """
         results = self.__db.fetch(query,
-                {'a_id': a_id, 'b_id': b_id})
+                {'start': start, 'end': end})
         try:
             return results.single()['path'].nodes
         except ResultError:
