@@ -1,10 +1,55 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="static/deps/jquery-ui-1.11.4.custom/jquery-ui.theme.css">
-    <link rel="stylesheet" href="static/test.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script>
+/*
+    function getTags(input) {
+      $.ajax({
+        url: "pages?startsWith=" + input
+      }).done(function() {
+      })
+      return ["andy", "wong"]
+    }
+    */
+    $(function() {
+      $("#start").autocomplete({
+        source: function( request, response ) {
+          console.log('searching');
+          search_url = "http://" + location.host + "/pages?startsWith=" + request.term;
+          console.log(search_url)
+          console.log(request)
+          $.ajax({
+            url: search_url,
+            success: function( data ) {
+              console.log('what')
+              console.log(data)
+              response( data );
+            }
+          });
+        },
+        select: function( event, ui) {
+          console.log(ui.item.title)
+          $("#start").val(ui.item.title);
+          $("#start_id").val(ui.item.id);
+          return false;
+        }
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+        return $( "<li>" )
+          .append( "<a>" + item.title + "</a>" )
+          .appendTo( ul );
+        };
+      ;
+    });
+    </script>
   </head>
   <body>
+    <label for="start">Start</label>
+    <input id="start" class="title_search">
+    <input id="start_id" type="hidden">
     hello world
   </body>
 </html>
