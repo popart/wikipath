@@ -34,8 +34,5 @@ class PagesShortestPathResource:
         self.pages = pages.Pages(self.db)
 
     def on_get(self, req, resp, a_id, b_id):
-        res = self.pages.shortest_path(a_id, b_id)
-        output = []
-        for r in res:
-            output.append(r['title'])
-        resp.body = json.dumps(output)
+        path = self.pages.shortest_path(a_id, b_id)
+        resp.body = json.dumps(list(path))

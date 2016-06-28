@@ -15,7 +15,7 @@ class Pages:
 
     def search_title(self, title, limit=8):
         query = """
-            MATCH (a: Page)
+            MATCH (a:Page)
             WHERE a.title STARTS WITH {title}
             RETURN a.title as title, a.id as id
             LIMIT {limit}
@@ -26,10 +26,13 @@ class Pages:
 
     def shortest_path(self, a_id, b_id):
         query = """
-            MATCH (a: Page {id: {a_id}}), (b: Page {id {b_id}}),
-            p = shortestPath((a)-[*..8]->(b))
+            MATCH (a:Page {id:{a_id}}), (b:Page {id:{b_id}}),
+            p = shortestPath((a)-[*]->(b))
             RETURN p
         """
         results = self.__db.fetch(query,
                 {'a_id': a_id, 'b_id': b_id})
-        return results
+        try:
+            return results.next()['path'].nodes
+        except StopIteration:
+            return []
