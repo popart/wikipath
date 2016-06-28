@@ -12,5 +12,6 @@ class TestResource:
 
 api = falcon.API()
 api.add_route('/test', TestResource())
-api.add_route('/pages', PageResource())
-api.add_route('/pages/search/{title}', PageSearchTitleResource())
+api.add_route('/pages', PagesResource())
+api.add_route('/pages/search/{title}', PagesSearchTitleResource())
+api.add_route('/pages/shortestPath/{a_id}/{b_id}', PagesShortestPathResource())

@@ -13,13 +13,23 @@ class Pages:
         results = self.__db.fetch(query, {'limit': 10})
         return results
 
-    def search_title(self, title, limit=10):
+    def search_title(self, title, limit=8):
         query = """
-            MATCH (p: Page)
-            WHERE p.title =~ {regex}
-            RETURN p.title as title, p.id as id
+            MATCH (a: Page)
+            WHERE a.title STARTS WITH {title}
+            RETURN a.title as title, a.id as id
             LIMIT {limit}
         """
         results = self.__db.fetch(query,
-                {'regex': '(?i).*%s.*' % title, 'limit': limit})
+                {'title': title, 'limit': limit})
+        return results
+
+    def shortest_path(self, a_id, b_id):
+        query = """
+            MATCH (a: Page {id: {a_id}}), (b: Page {id {b_id}}),
+            p = shortestPath((a)-[*..8]->(b))
+            RETURN p
+        """
+        results = self.__db.fetch(query,
+                {'a_id': a_id, 'b_id': b_id})
         return results
