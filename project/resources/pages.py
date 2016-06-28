@@ -35,4 +35,5 @@ class PagesShortestPathResource:
 
     def on_get(self, req, resp, a_id, b_id):
         path = self.pages.shortest_path(a_id, b_id)
-        resp.body = json.dumps(list(path))
+        out = list(map(lambda node: node.properties, path))
+        resp.body = json.dumps(out)

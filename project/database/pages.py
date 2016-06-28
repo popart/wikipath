@@ -34,5 +34,5 @@ class Pages:
                 {'a_id': a_id, 'b_id': b_id})
         try:
             return results.single()['path'].nodes
-        except StopIteration:
+        except ResultError:
             return []
