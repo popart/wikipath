@@ -1,1 +1,1 @@
-all = ["pages"]
+all = ["pages", "static"]
