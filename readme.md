@@ -1,3 +1,6 @@
+# Wikipedia Shortest Path Search, using Neo4j & Python Falcon
+This project provides sample code for querying a Neo4j database of 5.7 million nodes and 130 million relationships, accessing the database with an API built with Python Falcon, using the Python neo4j-driver. It also demonstrates use of the neo4j-import tool, and writing jQuery ajax requests to autopopulate a form field and display results.
+
 ## Requirements
   * 12G disk space (for db, raw text inputs, & intermediate files)
   * Docker
