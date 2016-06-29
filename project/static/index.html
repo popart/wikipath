@@ -86,11 +86,12 @@
       $("#submit").click(function() {
         var start = $("#start_id").val();
         var end = $("#end_id").val();
+        var $results = $("#results");
+        $results.empty();
+
         $.ajax({
           url: "http://" + location.host + "/pages/shortestPath?start=" + start + "&end=" + end,
           success: function(data) {
-            $results = $("#results");
-            $results.empty()
             if(data.length > 0) {
               resultsEls = "";
               for (var i in data) {
