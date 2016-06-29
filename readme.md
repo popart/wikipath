@@ -1,34 +1,34 @@
-Requirements:
-  12G disk space (for db, raw text inputs, & intermediate files)
-get data files:
+## Requirements
+  * 12G disk space (for db, raw text inputs, & intermediate files)
+  * Docker
+
+## Get data files:
   * pages: http://search-archives.s3.amazonaws.com/interview/pages.txt
   * links: http://search-archives.s3.amazonaws.com/interview/links.txt
+  * put them in the `data/raw` folder
 
-  put them in the data/raw folder
+## Get docker env:
+  * `docker pull popart/docker-moat`
 
-get docker env:
-  * docker pull popart/docker-moat
+## Run docker w/ ports exposed and mounts to this repo
+  * `scripts/run_docker`
 
-run docker w/ ports exposed & mounted git repo, neo4j data folder:
-  (use scripts/run_docker)
+## Inside the docker container:
+  * start neo4j with `/home/neo4j/bin/neo4j start`
 
-inside container:
-  * start neo4j
-  * /home/neo4j/bin/neo4j start
-
-from host (first time startup):
+## From host (first time startup ONLY):
   * login to neo4j shell at <container_ip>:7474
   * set a new password
 
-transform & import the data into neo4j:
-  * convert txt to csv files using scripts/transform_data.py
-  * upload into neo4j using scripts/import_data.py
-  * create db index w/ `python scripts/setup_db.py`
-    * first you need to edit this file and add db auth info
+## Transform & import the data into neo4j:
+  * convert txt to csv files using `python scripts/transform_data.py`
+  * upload into neo4j using `python scripts/import_data.py`
+  * create db indexes w/ `python scripts/setup_db.py`
+    * (first you need to edit this file and add db auth info)
 
-configure the webapp
-  copy project/config/env.py.example to env.py
-  update db parameters (probably just the password)
+## Configure the webapp
+  * copy project/config/env.py.example to env.py
+  * update db parameters (probably just the password)
 
-run the webapp
+## run the webapp
   `./run_webapp`
