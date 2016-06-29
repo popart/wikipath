@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <style>
+      .ui-widget.inline {
+        display: inline;
+      }
+      div#results {
+        margin-top: 40px;
+        margin-left: 53px;
+      }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script>
+    <script src="static/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
 
+    <script>
     function getRandom(max) {
       return Math.floor(Math.random() * max + 1);
     }
@@ -98,15 +107,22 @@
     </script>
   </head>
   <body>
-    <label for="start"> From </label>
-    <input id="start" class="title_search">
-    <input id="start_id" type="hidden">
-    <label for="end"> to </label>
-    <input id="end" class="title_search">
-    <input id="end_id" type="hidden">
-    <button id="submit"> Find Shortest Path </button>
-    <button id="randomize" disabled=true> Randomize </button>
+    <div class="inline ui-widget">
+      <label for="start"> From </label>
+      <input id="start" class="title_search">
+      <input id="start_id" type="hidden">
+    </div>
+    <div class="inline ui-widget">
+      <label for="end"> to </label>
+      <input id="end" class="title_search">
+      <input id="end_id" type="hidden">
+    </div>
+    <div class="inline ui-widget">
+      <button id="submit"> Find Shortest Path </button>
+      <button id="randomize" disabled=true> Randomize </button>
+    </div>
+    <br/>
 
-    <div id="results"></div>
+    <div id="results" class="ui-widget"></div>
   </body>
 </html>
