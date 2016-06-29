@@ -5,51 +5,105 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script>
-/*
-    function getTags(input) {
-      $.ajax({
-        url: "pages?startsWith=" + input
-      }).done(function() {
-      })
-      return ["andy", "wong"]
+
+    function getRandom(max) {
+      return Math.floor(Math.random() * max + 1);
     }
-    */
+
+    function getPage(id, callback) {
+      $.ajax({
+        url: "http://" + location.host + "/pages?id=" + id,
+        success: callback
+      });
+    }
+
+    $.ajax({
+      url: "http://" + location.host + "/pages/count",
+      success: function(data) {
+        var pagesCount = data;
+        $("#randomize").click(function() {
+          getPage(getRandom(pagesCount), function(data) {
+            $("#start").val(data[0].title);
+            $("#start_id").val(data[0].id);
+          })
+          getPage(getRandom(pagesCount), function(data) {
+            $("#end").val(data[0].title);
+            $("#end_id").val(data[0].id);
+          })
+        })
+      }
+    });
+
+    function searchTitle(request, response) {
+      $.ajax({
+        url: "http://" + location.host + "/pages?startsWith=" + request.term,
+        success: function(data) {
+          response(data);
+        }
+      });
+    }
+
+    function renderTitle(ul, item) {
+      return $("<li>")
+        .append("<a>" + item.title + "</a>")
+        .appendTo(ul);
+    };
+
     $(function() {
       $("#start").autocomplete({
-        source: function( request, response ) {
-          console.log('searching');
-          search_url = "http://" + location.host + "/pages?startsWith=" + request.term;
-          console.log(search_url)
-          console.log(request)
-          $.ajax({
-            url: search_url,
-            success: function( data ) {
-              console.log('what')
-              console.log(data)
-              response( data );
-            }
-          });
-        },
-        select: function( event, ui) {
-          console.log(ui.item.title)
+        source: searchTitle,
+        select: function(event, ui) {
           $("#start").val(ui.item.title);
           $("#start_id").val(ui.item.id);
           return false;
         }
       })
-      .autocomplete( "instance" )._renderItem = function( ul, item ) {
-        return $( "<li>" )
-          .append( "<a>" + item.title + "</a>" )
-          .appendTo( ul );
-        };
-      ;
+      .autocomplete("instance")._renderItem = renderTitle;
+
+      $("#end").autocomplete({
+        source: searchTitle,
+        select: function(event, ui) {
+          $("#end").val(ui.item.title);
+          $("#end_id").val(ui.item.id);
+          return false;
+        }
+      })
+      .autocomplete("instance")._renderItem = renderTitle;
+
+      $("#submit").click(function() {
+        var start = $("#start_id").val();
+        var end = $("#end_id").val();
+        $.ajax({
+          url: "http://" + location.host + "/pages/shortestPath?start=" + start + "&end=" + end,
+          success: function(data) {
+            $results = $("#results");
+            $results.empty()
+            if(data.length > 0) {
+              resultsEls = "";
+              for (var i in data) {
+                $results.append("<div>" +
+                  data[i].title + "</div>")
+              }
+            } else {
+              $results.append("<div> No Path Found </div>")
+            }
+          }
+        });
+      })
+
     });
     </script>
   </head>
   <body>
-    <label for="start">Start</label>
+    <label for="start"> From </label>
     <input id="start" class="title_search">
     <input id="start_id" type="hidden">
-    hello world
+    <label for="end"> to </label>
+    <input id="end" class="title_search">
+    <input id="end_id" type="hidden">
+    <button id="submit"> Find Shortest Path </button>
+    <button id="randomize"> Randomize </button>
+
+    <div id="results"></div>
   </body>
 </html>

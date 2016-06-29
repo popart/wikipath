@@ -18,6 +18,15 @@ class PagesResource:
             }, res))
         resp.body = json.dumps(out)
 
+class PagesCountResource:
+    def __init__(self):
+        self.db = neo4jconn.Neo4JConn(**env.db_settings)
+        self.pages = pages.Pages(self.db)
+
+    def on_get(self, req, resp):
+        res = self.pages.count(req.params)
+        resp.body = json.dumps(res)
+
 class PagesShortestPathResource:
     def __init__(self):
         self.db = neo4jconn.Neo4JConn(**env.db_settings)

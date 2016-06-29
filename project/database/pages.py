@@ -17,6 +17,10 @@ class Pages:
             where_clause = where_clause + \
                 "AND p.title STARTS WITH {startsWith}\n"
             search_params['startsWith'] = params['startsWith']
+        if 'id' in params:
+            where_clause = where_clause + \
+                "AND p.id = {id}\n"
+            search_params['id'] = params['id']
 
         query = """
             MATCH (p: Page)
@@ -28,6 +32,25 @@ class Pages:
 
         results = self.__db.fetch(query, search_params)
         return results
+
+    def count(self, params):
+        search_params = {}
+        where_clause = ""
+
+        if 'startsWith' in params:
+            where_clause = where_clause + \
+                "AND p.title STARTS WITH {startsWith}\n"
+            search_params['startsWith'] = params['startsWith']
+
+        query = """
+            MATCH (p:Page)
+            WHERE 1=1
+            %s
+            RETURN count(p) AS count
+        """ % where_clause
+
+        results = self.__db.fetch(query, search_params).single()
+        return results['count']
 
     def shortest_path(self, start, end):
         query = """
