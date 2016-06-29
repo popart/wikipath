@@ -34,22 +34,13 @@ class Pages:
         return results
 
     def count(self, params):
-        search_params = {}
-        where_clause = ""
-
-        if 'startsWith' in params:
-            where_clause = where_clause + \
-                "AND p.title STARTS WITH {startsWith}\n"
-            search_params['startsWith'] = params['startsWith']
-
+        #this query accepts no parameters to allow indexed return
         query = """
             MATCH (p:Page)
-            WHERE 1=1
-            %s
             RETURN count(p) AS count
-        """ % where_clause
+        """
 
-        results = self.__db.fetch(query, search_params).single()
+        results = self.__db.fetch(query, {}).single()
         return results['count']
 
     def shortest_path(self, start, end):
